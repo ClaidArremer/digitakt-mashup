@@ -1,0 +1,77 @@
+{
+ "id": "mashup-dt",
+ "version": "0.6.1",
+ "title": "MASHUP (performance repeats and effects on the trig keys, FUNC + SAMPLING)",
+ "category": "Performance",
+ "author": "Robbie",
+ "license": "GPL-2.0-or-later",
+ "description": "MASHUP (formerly STUTTER) for the Digitakt mk1 (OS 1.54): an always-on buffer of the master mix, before GESTALT, played back quantised. FUNC + SAMPLING turns MASHUP mode on and off (a pop-up says which; SAMPLING lights purple and each trig key shows its colour, with the sequencer step moving across them). In the mode, on the normal screen: 9-14 repeat the last 1/2 bar, 1/4, 1/8, 1/16, 1/32 or 1/8 triplet; 15 REV; 16 HALF (alone: HALF-TIME, in time); 15 alone: each beat backwards, in time; 1 SCRAMBLE, 2 SCRAMBLE 1/8, 3 SCRAMBLE + REV, 4 SCRAMBLE MIX, 5 PITCH down, 6 PITCH up, 7 ROLL, 8 BACKSPIN. Changes land on the next 16th; each press names itself on the top line. SAMPLING + a trig key latches it; the key again, or SAMPLING alone, unlatches. Pattern and bank selection, grid recording and keyboard mode keep their stock keys and lights. Mode off: every key is stock. 5.4 s of stereo in the recorder RAM: MASHUP pauses while the recorder is armed or recording, and overwrites a take left on the RECORDER page.",
+ "device": "digitakt-mk1",
+ "os": "1.54",
+ "sources": [
+  "src/stutter.c",
+  "src/keyhook.s",
+  "src/ledhook.s"
+ ],
+ "cflags": [
+  "-fno-auto-inc-dec",
+  "-fno-tree-loop-distribute-patterns",
+  "-fno-builtin"
+ ],
+ "sites": [
+  {
+   "addr": "0x40029a50",
+   "stock": "2f024e942f2a0094",
+   "op": "jmp",
+   "target": "st_keyhook"
+  },
+  {
+   "addr": "0x400083a0",
+   "stock": "4feffff048d7041c",
+   "op": "jmp",
+   "target": "st_ledhook"
+  },
+  {
+   "addr": "0x40029876",
+   "stock": "4fefff7448d77cfc",
+   "op": "jmp",
+   "target": "st_viewhook"
+  },
+  {
+   "addr": "0x40033b6c",
+   "stock": "4fefffe848d71c1c",
+   "op": "jmp",
+   "target": "st_acthook"
+  }
+ ],
+ "subscribe": [
+  {
+   "event": "ev_render_master",
+   "fn": "st_render",
+   "order": 60
+  },
+  {
+   "event": "ev_key",
+   "fn": "st_evkey",
+   "order": 40
+  },
+  {
+   "event": "ev_enc",
+   "fn": "st_enc",
+   "order": 40
+  }
+ ],
+ "requires": [
+  "core"
+ ],
+ "resources": {
+  "names": [
+   "keys:trig 1-16 on the normal screen in MASHUP mode",
+   "keys:FUNC+SAMPLING",
+   "leds:trig keys and SAMPLING in MASHUP mode",
+   "ram:recorder buffer 0x42380000-0x42480000",
+   "knobs:A-H while a MASHUP key or SAMPLING is held in MASHUP mode"
+  ],
+  "core": "4.1"
+ }
+}
